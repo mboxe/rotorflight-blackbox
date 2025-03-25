@@ -475,6 +475,37 @@ function HeaderDialog(dialog, onSave) {
         }
     }
 
+    function renderRPMNotches(gyro_rpm_notch_preset,
+        gyro_rpm_notch_min_hz,
+        gyro_rpm_notch_source_pitch,
+        gyro_rpm_notch_center_pitch,
+        gyro_rpm_notch_q_pitch,
+        gyro_rpm_notch_source_roll,
+        gyro_rpm_notch_center_roll,
+        gyro_rpm_notch_q_roll,
+        gyro_rpm_notch_source_yaw,
+        gyro_rpm_notch_center_yaw,
+        gyro_rpm_notch_q_yaw) {
+
+
+        var $table = $('.rpm_notches table tbody').empty()
+            let elem = ""
+            elem += `<tr><td>RPM Notch Preset</td><td>${gyro_rpm_notch_preset}</td></tr>`
+            elem += `<tr><td>RPM Notch Min Hz</td><td>${gyro_rpm_notch_min_hz}</td></tr>`
+            elem += `<tr><td>RPM Notch Min Source Pitch</td><td>${gyro_rpm_notch_source_pitch}</td></tr>`
+            elem += `<tr><td>RPM Notch Center Pitch</td><td>${gyro_rpm_notch_center_pitch}</td></tr>`
+            elem += `<tr><td>RPM Notch Q Pitch</td><td>${gyro_rpm_notch_q_pitch}</td></tr>`
+            elem += `<tr><td>RPM Notch Source Roll</td><td>${gyro_rpm_notch_source_roll}</td></tr>`
+            elem += `<tr><td>RPM Notch Center Roll</td><td>${gyro_rpm_notch_center_roll}</td></tr>`
+            elem += `<tr><td>RPM Notch Q Roll</td><td>${gyro_rpm_notch_q_roll}</td></tr>`
+            elem += `<tr><td>RPM Notch Source Yaw</td><td>${gyro_rpm_notch_source_yaw}</td></tr>`
+            elem += `<tr><td>RPM Notch Center Yaw</td><td>${gyro_rpm_notch_center_yaw}</td></tr>`
+            elem += `<tr><td>RPM Notch Q Yaw</td><td>${gyro_rpm_notch_q_yaw}</td></tr>`
+    
+        
+            $table.append(elem);
+    }
+
     function renderRpmFilters(sources, qs, limits) {
         const items = (sources || []).reduce(function(acc, src, i) {
             if(src == 0) return acc
@@ -519,6 +550,7 @@ function HeaderDialog(dialog, onSave) {
     function renderSysConfig(sysConfig) {
 
       activeSysConfig = sysConfig; // Store the current system configuration
+      console.log('sys config ',sysConfig);
 
       // Update the log header
 
@@ -526,6 +558,8 @@ function HeaderDialog(dialog, onSave) {
       $('h5.modal-title-board-info').text((sysConfig['Board information'] != null) ? ` Board : ${sysConfig['Board information']}` : '');
       $('h5.modal-title-date').text((sysConfig['Firmware date'] != null) ? ` Date : ${sysConfig['Firmware date']}` : '');
       $('h5.modal-title-craft').text((sysConfig['Craft name'] != null) ? ` Name : ${sysConfig['Craft name']}` : '');
+      $('h5.modal-title-date-time').text((sysConfig['Log start datetime'] != null) ? ` Log Start Date and Time : ${sysConfig['Log start datetime']}` : '');
+
 
                 switch(sysConfig.firmwareType) {
                         case FIRMWARE_TYPE_ROTORFLIGHT:
@@ -620,6 +654,18 @@ function HeaderDialog(dialog, onSave) {
         setParameter('rates[0]'                 , sysConfig.rates[0] * ratesFactor, ratesDec);
         setParameter('rates[1]'                 , sysConfig.rates[1] * ratesFactor, ratesDec);
         setParameter('rates[2]'                 , sysConfig.rates[2] * ratesFactor, ratesDec);
+
+        renderRPMNotches(sysConfig.gyro_rpm_notch_preset,
+            sysConfig.gyro_rpm_notch_min_hz,
+            sysConfig.gyro_rpm_notch_source_pitch,
+            sysConfig.gyro_rpm_notch_center_pitch,
+            sysConfig.gyro_rpm_notch_q_pitch,
+            sysConfig.gyro_rpm_notch_source_roll,
+            sysConfig.gyro_rpm_notch_center_roll,
+            sysConfig.gyro_rpm_notch_q_roll,
+            sysConfig.gyro_rpm_notch_source_yaw,
+            sysConfig.gyro_rpm_notch_center_yaw,
+            sysConfig.gyro_rpm_notch_q_yaw );
 
         renderRpmFilters(sysConfig.gyro_rpm_filter_bank_rpm_source, sysConfig.gyro_rpm_filter_bank_notch_q, sysConfig.gyro_rpm_filter_bank_rpm_limit)
 
@@ -787,8 +833,10 @@ function HeaderDialog(dialog, onSave) {
         setParameter('yaw_precomp_cutoff'        , sysConfig.yaw_precomp[0], 0);
         setParameter('yaw_precomp_cyclic'        , sysConfig.yaw_precomp[1], 0);
         setParameter('yaw_precomp_collective'    , sysConfig.yaw_precomp[2], 0);
-        setParameter('yaw_precomp_impulse_gain'  , sysConfig.yaw_precomp_impulse[0], 0);
-        setParameter('yaw_precomp_impulse_decay' , sysConfig.yaw_precomp_impulse[1], 0);
+        //setParameter('yaw_precomp_impulse_gain'  , sysConfig.yaw_precomp_impulse[0], 0);
+        //setParameter('yaw_precomp_impulse_decay' , sysConfig.yaw_precomp_impulse[1], 0);
+        setParameter('yaw_inertia_precomp_gain'  , sysConfig.yaw_inertia_precomp[0], 0);
+        setParameter('yaw_inertia_precomp_decay' , sysConfig.yaw_inertia_precomp[1], 0);
         setParameter('yaw_tta_gain'              , sysConfig.yaw_tta[0], 0);
         setParameter('yaw_tta_limit'             , sysConfig.yaw_tta[1], 0);
 
