@@ -550,7 +550,6 @@ function HeaderDialog(dialog, onSave) {
     function renderSysConfig(sysConfig) {
 
       activeSysConfig = sysConfig; // Store the current system configuration
-      console.log('sys config ',sysConfig);
 
       // Update the log header
 
