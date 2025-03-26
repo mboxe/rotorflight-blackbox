@@ -324,6 +324,7 @@ var FlightLogParser = function(logData) {
             motor_poles: 1,
             yaw_stop_gain: [null, null],
             yaw_precomp: [null, null, null],
+            yaw_precomp_impulse: [null, null],
             yaw_inertia_precomp: [null, null],
             yaw_tta: [null, null],
             hsi_gain: [null, null],
@@ -857,6 +858,7 @@ var FlightLogParser = function(logData) {
             case "error_limit":
             case "yaw_stop_gain":
             case "yaw_precomp":
+            case "yaw_precomp_impulse":    
             case "yaw_inertia_precomp":
             case "yaw_tta":
             case "hsi_gain":

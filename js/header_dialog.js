@@ -833,8 +833,8 @@ function HeaderDialog(dialog, onSave) {
         setParameter('yaw_precomp_cutoff'        , sysConfig.yaw_precomp[0], 0);
         setParameter('yaw_precomp_cyclic'        , sysConfig.yaw_precomp[1], 0);
         setParameter('yaw_precomp_collective'    , sysConfig.yaw_precomp[2], 0);
-        //setParameter('yaw_precomp_impulse_gain'  , sysConfig.yaw_precomp_impulse[0], 0);
-        //setParameter('yaw_precomp_impulse_decay' , sysConfig.yaw_precomp_impulse[1], 0);
+        setParameter('yaw_precomp_impulse_gain'  , sysConfig.yaw_precomp_impulse[0], 0);
+        setParameter('yaw_precomp_impulse_decay' , sysConfig.yaw_precomp_impulse[1], 0);
         setParameter('yaw_inertia_precomp_gain'  , sysConfig.yaw_inertia_precomp[0], 0);
         setParameter('yaw_inertia_precomp_decay' , sysConfig.yaw_inertia_precomp[1], 0);
         setParameter('yaw_tta_gain'              , sysConfig.yaw_tta[0], 0);
