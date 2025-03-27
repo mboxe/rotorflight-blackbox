@@ -486,25 +486,69 @@ function HeaderDialog(dialog, onSave) {
         gyro_rpm_notch_source_yaw,
         gyro_rpm_notch_center_yaw,
         gyro_rpm_notch_q_yaw) {
+        
+        //Create pitch data    
+        const pitchItems = createNotchData(gyro_rpm_notch_source_pitch,gyro_rpm_notch_q_pitch,gyro_rpm_notch_center_pitch)
+        //Create roll data    
+        const rollItems = createNotchData(gyro_rpm_notch_source_roll,gyro_rpm_notch_q_roll,gyro_rpm_notch_center_roll)
+        //Create yaw data
+        const yawItems = createNotchData(gyro_rpm_notch_source_yaw,gyro_rpm_notch_q_yaw,gyro_rpm_notch_center_yaw)
 
 
         var $table = $('.rpm_notches table tbody').empty()
-            let elem = ""
-            elem += `<tr><td>RPM Notch Preset</td><td>${gyro_rpm_notch_preset}</td></tr>`
-            elem += `<tr><td>RPM Notch Min Hz</td><td>${gyro_rpm_notch_min_hz}</td></tr>`
-            elem += `<tr><td>RPM Notch Min Source Pitch</td><td>${gyro_rpm_notch_source_pitch}</td></tr>`
-            elem += `<tr><td>RPM Notch Center Pitch</td><td>${gyro_rpm_notch_center_pitch}</td></tr>`
-            elem += `<tr><td>RPM Notch Q Pitch</td><td>${gyro_rpm_notch_q_pitch}</td></tr>`
-            elem += `<tr><td>RPM Notch Source Roll</td><td>${gyro_rpm_notch_source_roll}</td></tr>`
-            elem += `<tr><td>RPM Notch Center Roll</td><td>${gyro_rpm_notch_center_roll}</td></tr>`
-            elem += `<tr><td>RPM Notch Q Roll</td><td>${gyro_rpm_notch_q_roll}</td></tr>`
-            elem += `<tr><td>RPM Notch Source Yaw</td><td>${gyro_rpm_notch_source_yaw}</td></tr>`
-            elem += `<tr><td>RPM Notch Center Yaw</td><td>${gyro_rpm_notch_center_yaw}</td></tr>`
-            elem += `<tr><td>RPM Notch Q Yaw</td><td>${gyro_rpm_notch_q_yaw}</td></tr>`
-    
-        
-            $table.append(elem);
+        let elem = ""
+        for (const [src, item] of Object.entries(pitchItems)) {
+            elem += `<tr><td>Pitch</td><td>${item.source}</td><td>${item.type}</td><td>${item.harmonic}</td><td>${item.q}</td><td>${item.center}</td></tr>`
+        }
+        for (const [src, item] of Object.entries(rollItems)) {
+            elem += `<tr><td>Roll</td><td>${item.source}</td><td>${item.type}</td><td>${item.harmonic}</td><td>${item.q}</td><td>${item.center}</td></tr>`
+        }
+        for (const [src, item] of Object.entries(yawItems)) {
+            elem += `<tr><td>Yaw</td><td>${item.source}</td><td>${item.type}</td><td>${item.harmonic}</td><td>${item.q}</td><td>${item.center}</td></tr>`
+        }
+
+
+        $table.append(elem);
     }
+
+   function createNotchData(source,q,center) {
+
+    const items = (source || []).reduce(function(acc, src, i) {
+        if(src == 0) return acc
+        if(!acc[src]) {
+            acc[src] = {type: "Single"}
+        } else {
+            acc[src].type = "Double"
+        }
+
+        if(src >= 1 && src <= 8) {
+            acc[src].source = "Motor " + src
+            acc[src].harmonic = harmonicLabel(1)
+        } else if(src == 10) {
+            acc[src].source = "Main Motor"
+            acc[src].harmonic = harmonicLabel(1)
+        } else if(src >= 11 && src <= 18) {
+            acc[src].source = "Main Rotor"
+            acc[src].harmonic = harmonicLabel(src % 10)
+        } else if(src == 20) {
+            acc[src].source = "Tail Motor"
+            acc[src].harmonic = harmonicLabel(1)
+        } else if(src >= 21 && src <= 28) {
+            acc[src].source = "Tail Rotor"
+            acc[src].harmonic = harmonicLabel(src % 10)
+        } else {
+            acc[src].source = "Unknown"
+            acc[src].harmonic = harmonicLabel(0)
+        }
+        acc[src].q = (q[i] * 0.1).toFixed(1)
+        acc[src].center = center[i];
+        return acc
+    }, {})
+
+    return items
+    
+
+   }
 
     function renderRpmFilters(sources, qs, limits) {
         const items = (sources || []).reduce(function(acc, src, i) {
@@ -1008,7 +1052,10 @@ function HeaderDialog(dialog, onSave) {
                          $(".no-inav").hide();
                          $(".bf-only").hide();
                  }
-
+        
+        // Hide non supported  fields
+        hideNonSupportedFeatures(activeSysConfig);
+        
     }
 
     function convertUIToSysConfig() {
@@ -1102,4 +1149,40 @@ function HeaderDialog(dialog, onSave) {
     $(".header-dialog-save").click(function(e) {
         onSave(convertUIToSysConfig());
     });
+}
+
+//Convert textual release to numbers to provide a hiearchy for mathematical feature expressions
+const firmwareLevels = [
+    {
+        name: 'Rotorflight 4.5.0 (9f531c2c6) STM32F7X2',
+        level: 90
+    },
+    {
+        name: 'Rotorflight 4.4.0 (5fc142a) STM32F7X2',
+        level: 80
+    }
+]
+
+const Release211 = 'Rotorflight 4.5.0 (9f531c2c6) STM32F7X2'
+const Release210 = 'Rotorflight 4.4.0 (5fc142a) STM32F7X2';
+
+/* Use Jquery $Selector.hide() to remove items not supported by spedfic firmware versions */
+function hideNonSupportedFeatures(activeSysConfig){
+    
+    const firmwareRevision = activeSysConfig['Firmware revision'];
+    const {level} = firmwareLevels.find(firmObj => firmObj.name === firmwareRevision )
+
+    //Conditions based on math <>=!=, etc...
+    if (level === 90){
+        $('td[name="yaw_precomp_impulse_decay"]').hide();  
+        $('td[name="yaw_precomp_impulse_gain"]').hide();
+        $('.rpm_filters').hide();
+        $('.rpm_notches').show();
+    }else if (level === 80){
+        $('td[name="yaw_inertia_precomp_decay"]').hide();  
+        $('td[name="yaw_inertia_precomp_gain"]').hide();
+        $('.rpm_filters').show();
+        $('.rpm_notches').hide();
+    }
+
 }
