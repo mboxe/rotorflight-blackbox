@@ -1151,38 +1151,22 @@ function HeaderDialog(dialog, onSave) {
     });
 }
 
-//Convert textual release to numbers to provide a hiearchy for mathematical feature expressions
-const firmwareLevels = [
-    {
-        name: 'Rotorflight 4.5.0 (9f531c2c6) STM32F7X2',
-        level: 90
-    },
-    {
-        name: 'Rotorflight 4.4.0 (5fc142a) STM32F7X2',
-        level: 80
-    }
-]
-
-const Release211 = 'Rotorflight 4.5.0 (9f531c2c6) STM32F7X2'
-const Release210 = 'Rotorflight 4.4.0 (5fc142a) STM32F7X2';
 
 /* Use Jquery $Selector.hide() to remove items not supported by spedfic firmware versions */
 function hideNonSupportedFeatures(activeSysConfig){
-    
-    const firmwareRevision = activeSysConfig['Firmware revision'];
-    const {level} = firmwareLevels.find(firmObj => firmObj.name === firmwareRevision )
 
-    //Conditions based on math <>=!=, etc...
-    if (level === 90){
-        $('td[name="yaw_precomp_impulse_decay"]').hide();  
-        $('td[name="yaw_precomp_impulse_gain"]').hide();
-        $('.rpm_filters').hide();
-        $('.rpm_notches').show();
-    }else if (level === 80){
-        $('td[name="yaw_inertia_precomp_decay"]').hide();  
-        $('td[name="yaw_inertia_precomp_gain"]').hide();
-        $('.rpm_filters').show();
-        $('.rpm_notches').hide();
+    if (activeSysConfig.yaw_precomp_impulse[0] == null) {
+        $('td[name="yaw_precomp_impulse_decay"]').hide();
+        $('td[name="yaw_precomp_impulse_gain"]').hide();  
     }
+    
+    if (activeSysConfig.yaw_inertia_precomp[0] == null) {
+        $('td[name="yaw_inertia_precomp_decay"]').hide();  
+        $('td[name="yaw_inertia_precomp_gain"]').hide(); 
+    }
+   
+    activeSysConfig.gyro_rpm_filter_bank_rpm_source.length === 0 ? $('.rpm_filters').hide() :  $('.rpm_filters').show();
 
+    activeSysConfig.gyro_rpm_notch_source_pitch.length === 0 ? $('.rpm_notches').hide() : $('.rpm_notches').show();
+    
 }

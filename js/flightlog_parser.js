@@ -366,6 +366,17 @@ var FlightLogParser = function(logData) {
             throttle_limit_percent: null,
             throttle_boost: null,                    // throttle boost
             throttle_boost_cutoff: null,
+            gyro_rpm_notch_preset:null,
+            gyro_rpm_notch_min_hz: null,
+            gyro_rpm_notch_source_pitch:[],
+            gyro_rpm_notch_center_pitch:[],
+            gyro_rpm_notch_q_pitch:[],
+            gyro_rpm_notch_source_roll:[],
+            gyro_rpm_notch_center_roll:[],
+            gyro_rpm_notch_q_roll:[],
+            gyro_rpm_notch_source_yaw:[],
+            gyro_rpm_notch_center_yaw:[],
+            gyro_rpm_notch_q_yaw:[],
             unknownHeaders : []                     // Unknown Extra Headers
         },
 
@@ -871,14 +882,14 @@ var FlightLogParser = function(logData) {
             case "gyro_rpm_notch_preset":
             case "gyro_rpm_notch_min_hz":
             case "gyro_rpm_notch_source_pitch":
-            case  "gyro_rpm_notch_center_pitch":
-            case  "gyro_rpm_notch_q_pitch":
-            case  "gyro_rpm_notch_source_roll":
-            case  "gyro_rpm_notch_center_roll":
-            case  "gyro_rpm_notch_q_roll":
-            case  "gyro_rpm_notch_source_yaw":
-            case  "gyro_rpm_notch_center_yaw":
-            case  "gyro_rpm_notch_q_yaw":    
+            case "gyro_rpm_notch_center_pitch":
+            case "gyro_rpm_notch_q_pitch":
+            case "gyro_rpm_notch_source_roll":
+            case "gyro_rpm_notch_center_roll":
+            case "gyro_rpm_notch_q_roll":
+            case "gyro_rpm_notch_source_yaw":
+            case "gyro_rpm_notch_center_yaw":
+            case "gyro_rpm_notch_q_yaw":    
             case "gyro_rpm_filter_bank_rpm_source":
             case "gyro_rpm_filter_bank_rpm_limit":
             case "gyro_rpm_filter_bank_notch_q":
