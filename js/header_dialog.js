@@ -486,6 +486,11 @@ function HeaderDialog(dialog, onSave) {
         gyro_rpm_notch_source_yaw,
         gyro_rpm_notch_center_yaw,
         gyro_rpm_notch_q_yaw) {
+
+        var $tableNc = $('.rpm_notch_config table tbody').empty()
+        let elemNc = `<tr><td>Gyro Rpm Notch Preset</td><td>${gyro_rpm_notch_preset}</td></tr>`;
+        elemNc += `<tr><td>Gyro Rpm Notch Min Hz</td><td>${gyro_rpm_notch_min_hz}</td></tr>`;
+        $tableNc.append(elemNc);    
         
         //Create pitch data    
         const pitchItems = createNotchData(gyro_rpm_notch_source_pitch,gyro_rpm_notch_q_pitch,gyro_rpm_notch_center_pitch)
@@ -1168,5 +1173,7 @@ function hideNonSupportedFeatures(activeSysConfig){
     activeSysConfig.gyro_rpm_filter_bank_rpm_source.length === 0 ? $('.rpm_filters').hide() :  $('.rpm_filters').show();
 
     activeSysConfig.gyro_rpm_notch_source_pitch.length === 0 ? $('.rpm_notches').hide() : $('.rpm_notches').show();
+
+    activeSysConfig.gyro_rpm_notch_preset == null? $('.rpm_notch_config').hide() : $('.rpm_notch_config').show();
     
 }
